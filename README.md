@@ -1,4 +1,4 @@
-### Indice:
+# Indice:
 
 - [Inizializzazione](#inizializzazione-di-un-progetto)
   - [ui5.yaml](#ui5yaml)
@@ -7,9 +7,19 @@
   - [index.html](#indexhtml)
   - [Component.js](#componentjs)
   - [Avvio](#avvio)
+  - [Root view](#root-view)
+- [Navigazione](#navigation)
+	- [Routing](#routing)
 - Risorse:
   - [UI5 Tooling](https://sap.github.io/ui5-tooling/v3/pages/GettingStarted/)
   - [Walkthrough](https://sapui5.hana.ondemand.com/#/topic/3da5f4be63264db99f2e5b04c5e853db)
+  - [Side navbar](https://sapui5.hana.ondemand.com/#/entity/sap.tnt.SideNavigation/sample/sap.tnt.sample.SideNavigation/code)
+  - [TNT Layout](https://sapui5.hana.ondemand.com/#/api/sap.tnt.ToolPage%23controlProperties)
+  - [Flex Columns](https://sapui5.hana.ondemand.com/#/entity/sap.f.FlexibleColumnLayout)
+
+<br>
+<br>
+<br>
 
 ---
 
@@ -146,4 +156,160 @@ Se, ogni volta che riprendiamo a lavorare sul progetto o vogliamo semplicemente 
 "scripts": {
     "start": "ui5 serve -o index.html"
 }
+```
+
+<br>
+<br>
+<br>
+<br>
+
+---
+
+# Root view
+
+Una volta che abbiamo inizializzato correttamente il progetto, possiamo procedere con la creazione della prima vista. Attualmente, infatti, nel browser stiamo visualizzando l'index.html che è vuoto.
+Dato che dobbiamo realizzare una SPA, dobbiamo creare la vista che conterrà le varie pagine tra le quali l'utente protrà navigare. Quindi ci serve una vista root.
+
+Pertanto, creamola in webapp/view, chiamandola App.view.xml e conterrà per il momento:
+
+```xml
+<mvc:XMLView xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Text text="Ciao" />
+</mvc:XMLView>
+```
+
+A questo punto, se ricarichiamo la pagine del browser, ci aspetteremmo di vedere la scritta "Ciao".
+Questo non accade perchè non abbiamo indicato in nessun modo a UI5 qual'è la vista root. Per farlo, dobbiamo sfruttare il manifest.json:
+
+```json
+"sap.ui5": {
+	"rootView": {
+		"viewName": "ui5.terzo_progetto.view.App",
+		"type": "XML"
+	}
+}
+```
+
+Se ricaricando la pagina, apparirà la scritta, vuol dire che abbiamo fatto tutto correttamente.
+
+In questo progetto, utilizzeremo la vista App come layout, pertanto inseriremo la navbar laterale.
+
+<br>
+<br>
+<br>
+
+---
+
+# Navigation
+
+## Side navbar
+
+La barra di navigazione latarele sarà implementata attraverso la libreria tnt.
+Per poter utilizzare altre librerie, bisognerà seguire i seguenti passaggi:
+
+- aggiungerle al ui5.yaml tramite il seguente comando: `ui5 add sap.tnt`
+- importarle nella vista in cui le utilizzermo:
+
+```xml
+<mvc:XMLView
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:tnt="sap.tnt">
+	
+	<tnt:SideNavigation>
+		...
+	</tnt:SideNavigation>
+
+	<App id="app" />
+</mvc:XMLView>
+```
+
+**Note**: 
+- quando si aggiungono nuove librerie modificando l'ui5.yaml, bisogna riavviare sempre il server per applicare effettivamente le modifiche
+- il tag `App` è il placehoder che verrà sostituito dalla vista che verrà associata alla rotta attuale, cose che vederemo [qui](#routing).
+
+## Expanded toggle
+
+Per gestire lo stato expanded della sidebar, dobbiamo gestire la logica manualmente. La logica delle nostre viste deve essere gesita nel controller associato alla vista dato che UI5 utilizza il pattern MVC.
+
+Per poter associare un controller alla vista:
+
+- creiamo il controller nella cartella webapp/controller e lo chiameremo [nomeVista].controller.js. In questo caso sarà: `App.controller.js`:
+
+```javascript
+sap.ui.define(["sap/ui/core/mvc/Controller"], (Controller) => {
+	const controller = {};
+
+	return Controller.extend("ui5.terzo_progetto.controller.App", controller);
+});
+```
+
+- colleghiamo il controllore con la vista `App.view.xml`:
+
+```xml
+<mvc:XMLView
+	...
+	controllerName="ui5.terzo_progetto.controller.App">
+
+</mvc:XMLView>
+```
+
+## Routing
+
+Ora che abbiamo una barra di navigazione, diamo la possibilità all'utente di poter navigare fra varie pagine. Per poter far ciò bisogna sfruttare il routing, cosa presente in qualsiasi framework.
+
+Esso viene **gestito tramite il manifest.json**:
+
+```json
+{
+	...
+	"sap.ui5": {
+		...
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"type": "View",
+				"viewType": "XML",
+				"path": "ui5.terzo_progetto.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"transition": "slide",
+				"async": true
+			},
+			"routes": [
+				{
+					"name": "home",
+					"pattern": "",
+					"target": "home"
+				},
+				{
+					"name": "orders",
+					"pattern": "orders",
+					"target": "orders"
+				}
+			],
+			"targets": {
+				"home": {
+					"id": "home",
+					"name": "Home"
+				},
+				"orders": {
+					"id": "orders",
+					"name": "OrderList"
+				}
+			}
+		}
+	}
+}
+```
+
+Con questo esempio, **abbiamo dichiarato due rotte**:
+
+- una che ha come uri "/", indicato nella proprieta `routes`, a cui corrisposnde la vista `Home.view.xml` indicato nella proprieta `targets`
+- una che ha come uri "/orders", indicato nella proprieta `routes`, a cui corrisposnde la vista `OrderList.view.xml` indicato nella proprieta `targets`
+
+Però, questo non basta, infatti dobbiamo tornare nel [Component.js](#componentjs) e inizializzare il router aggiungendo nel metodo `onInit`, il seguente comando:
+
+```javascript
+this.getRouter().initialize();
 ```

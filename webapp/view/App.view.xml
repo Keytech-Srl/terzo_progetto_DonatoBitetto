@@ -1,0 +1,60 @@
+<mvc:XMLView
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+    controllerName="ui5.terzo_progetto.controller.App"
+>
+    <tnt:ToolPage
+        class="columns"
+        sideExpanded="false"
+    >
+        <tnt:sideContent>
+            <tnt:SideNavigation id="sideNav">
+                <tnt:NavigationList>
+                    <tnt:NavigationListItem
+                        icon="sap-icon://menu2"
+                        select=".toggleExpanded"
+                    />
+                    <tnt:NavigationListGroup text="Main">
+                        <tnt:NavigationListItem
+                            id="home"
+                            icon="sap-icon://home"
+                            text="Home"
+                            select=".navigate('home')"
+                        />
+                        <tnt:NavigationListItem
+                            id="orders"
+                            icon="sap-icon://customer-order-entry"
+                            text="Orders"
+                            select=".navigate('orders')"
+                        />
+                    </tnt:NavigationListGroup>
+                    <tnt:NavigationListGroup text="Infos">
+                        <tnt:NavigationListItem
+                            id="customers"
+                            icon="sap-icon://customer"
+                            text="Customers"
+                            select=".navigate('customers')"
+                        />
+                        <tnt:NavigationListItem
+                            id="suppliers"
+                            icon="sap-icon://supplier"
+                            text="Suppliers"
+                            select=".navigate('suppliers')"
+                        />
+                        <tnt:NavigationListItem
+                            id="shippers"
+                            icon="sap-icon://shipping-status"
+                            text="Shippers"
+                            select=".navigate('shippers')"
+                        />
+                    </tnt:NavigationListGroup>
+                </tnt:NavigationList>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+
+        <tnt:mainContents>
+            <App id="app" />
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:XMLView>
