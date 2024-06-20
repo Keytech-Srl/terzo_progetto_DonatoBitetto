@@ -1,0 +1,11 @@
+specVersion: "3.2"
+metadata:
+  name: tezo_progetto
+type: application
+framework:
+  name: SAPUI5
+  version: "1.125.0"
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: themelib_sap_horizon

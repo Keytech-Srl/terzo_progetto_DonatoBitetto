@@ -1,0 +1,15 @@
+{
+  "name": "tezo_progetto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ui5 serve -o index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@ui5/cli": "^3.10.3"
+  }
+}
