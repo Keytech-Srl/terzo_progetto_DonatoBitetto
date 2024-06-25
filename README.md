@@ -9,7 +9,7 @@
   - [Avvio](#avvio)
   - [Root view](#root-view)
 - [Navigazione](#navigation)
-	- [Routing](#routing)
+  - [Routing](#routing)
 - Risorse:
   - [UI5 Tooling](https://sap.github.io/ui5-tooling/v3/pages/GettingStarted/)
   - [Walkthrough](https://sapui5.hana.ondemand.com/#/topic/3da5f4be63264db99f2e5b04c5e853db)
@@ -215,7 +215,7 @@ Per poter utilizzare altre librerie, bisognerà seguire i seguenti passaggi:
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns="sap.m"
 	xmlns:tnt="sap.tnt">
-	
+
 	<tnt:SideNavigation>
 		...
 	</tnt:SideNavigation>
@@ -224,7 +224,8 @@ Per poter utilizzare altre librerie, bisognerà seguire i seguenti passaggi:
 </mvc:XMLView>
 ```
 
-**Note**: 
+**Note**:
+
 - quando si aggiungono nuove librerie modificando l'ui5.yaml, bisogna riavviare sempre il server per applicare effettivamente le modifiche
 - il tag `App` è il placehoder che verrà sostituito dalla vista che verrà associata alla rotta attuale, cose che vederemo [qui](#routing).
 
@@ -312,4 +313,51 @@ Però, questo non basta, infatti dobbiamo tornare nel [Component.js](#componentj
 
 ```javascript
 this.getRouter().initialize();
+```
+
+---
+
+# oData
+
+Se siamo arrivati a questo punto, probabilmente, il notro obiettivo attuale sarà quello di visualizzare dei dati. Per il momento, useremo dei dati esterni, provenienti dal seguente link: [Northwind](https://services.odata.org/V2/Northwind/Northwind.svc/).
+
+Per poter comunicare con un servizio esterno, in questo caso utilizzeremo una proxy. Pertanto:
+
+- installiamo il relativo pacchetto: `npm i -D ui5-middleware-simpleproxy`
+- aggiungiamo manualmente al `ui5.yaml` con il quale specifichiamo il servizio che utilizzermo per fetchare i dati e la versione degli oData che desideriamo utilizzare:
+
+```yaml
+server:
+  customMiddleware:
+    - name: ui5-middleware-simpleproxy
+      afterMiddleware: compression
+      mountPath: /V2
+      configuration:
+        baseUri: "https://services.odata.org"
+```
+- registriamo nel `manifest.json` il nuovo modello e la relativa origine. **Nota**: registriamo il modello nel manifest.json nel momento in cui vogliamo che esso sia accessibile da qualsiasi vista
+```json
+{
+	...
+	"sap.app": {
+		"id": "ui5.walkthrough",
+		"dataSources": {
+			"northwind": {
+				"uri": "V2/Northwind/Northwind.svc/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			}
+		}
+	},
+	"sap.ui5": {
+		...
+		"models": {
+			"": {
+				"dataSource": "northwind"
+			}
+		}
+	}
+}
 ```

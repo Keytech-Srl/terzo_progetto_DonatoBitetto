@@ -1,6 +1,97 @@
 <mvc:XMLView
+    xmlns:f="sap.f"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    controllerName="ui5.terzo_progetto.controller.OrderList"
 >
-    <Text text="Orders" />
+    <f:FlexibleColumnLayout
+        id="flexibleColumnLayout"
+        layout="OneColumn"
+    >
+        <f:beginColumnPages>
+            <Page>
+                <List
+                    items="{path:'/Orders', parameters:{ expand:'Customer,Order_Details' }}"
+                >
+                    <items>
+                        <ObjectListItem
+                            intro="OrderID: {OrderID}"
+                            title="{Customer/CompanyName}"
+                            type="Navigation"
+                            press=".onPress(${OrderID})"
+                        />
+                    </items>
+                </List>
+            </Page>
+        </f:beginColumnPages>
+        <f:midColumnPages>
+            <f:DynamicPage class="sapUiNoContentPadding">
+                <f:title>
+                    <f:DynamicPageTitle>
+                        <f:heading>
+                            <Title text="{Customer/CompanyName}" />
+                        </f:heading>
+                        <f:expandedContent>
+                            <Label text="OrderID: {OrderID}" />
+                        </f:expandedContent>
+                        <f:navigationActions>
+                            <Button
+                                icon="sap-icon://decline"
+                                press=".closeMidleColumn"
+                            />
+                        </f:navigationActions>
+                    </f:DynamicPageTitle>
+                </f:title>
+                <f:content>
+                    <IconTabBar>
+                        <items>
+                            <IconTabFilter text="Customer" />
+
+                            <IconTabFilter text="Products">
+                                <Table
+                                    busyIndicatorDelay="100"
+                                    alternateRowColors="true"
+                                    items="{path: 'Order_Details', parameters:{ expand: 'Product' }}"
+                                >
+                                    <columns>
+                                        <Column>
+                                            <Text text="Product" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Quantity" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Price" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Discount" />
+                                        </Column>
+                                        <Column>
+                                            <Text text="Tot." />
+                                        </Column>
+                                    </columns>
+                                    <items>
+                                        <ColumnListItem>
+                                            <cells>
+                                                <Text
+                                                    text="{Product/ProductName}"
+                                                />
+                                                <Text text="{Quantity}" />
+                                                <Text text="{UnitPrice}" />
+                                                <Text text="{Discount}" />
+                                                <Text
+                                                    text="{= ${Quantity} * ${UnitPrice} * ( 1 - ${Discount})}"
+                                                />
+                                                   <!--   -->
+                                            </cells>
+                                        </ColumnListItem>
+                                    </items>
+                                </Table>
+                            </IconTabFilter>
+                        </items>
+                    </IconTabBar>
+                </f:content>
+            </f:DynamicPage>
+        </f:midColumnPages>
+    </f:FlexibleColumnLayout>
 </mvc:XMLView>
