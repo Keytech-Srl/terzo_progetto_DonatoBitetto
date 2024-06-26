@@ -1,5 +1,8 @@
-sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/model/json/JSONModel"], (Controller, JSONModel) => {
+sap.ui.define(["sap/ui/core/mvc/Controller", "../model/formatter"], (Controller, formatter) => {
 	const controller = {
+		formatter: formatter,
+		editModal: undefined,
+
 		onPress: function (orderID) {
 			/* 
                 Questo metodo funziona solo se i dati sono stati fetchati in precedenza con un expand, 
@@ -44,14 +47,25 @@ sap.ui.define(["sap/ui/core/mvc/Controller", "sap/ui/model/json/JSONModel"], (Co
 				let detail = oModel.getProperty(`/${order_detail}`);
 				return acc + detail.UnitPrice * detail.Quantity * (1 - detail.Discount);
 			}, 0);
-			console.log(tot);
+			this.getView().byId("tot").setText(formatter.currency(tot));
 
 			this.getView().byId("flexibleColumnLayout").setLayout("TwoColumnsMidExpanded");
 		},
 
 		closeMidleColumn: function () {
 			this.getView().byId("flexibleColumnLayout").setLayout("OneColumn");
-		}
+		},
+
+		openEditCustomerModal: async function () {
+			this.editModal ??= await this.loadFragment({ name: "ui5.terzo_progetto.view.EditCustomerModal" });
+			this.editModal.open();
+		},
+		closeEditCustomerModal: function () {
+			this.editModal.close();
+		},
+		saveCustomer: function () {
+			this.editModal.close();
+		},
 	};
 
 	return Controller.extend("ui5.terzo_progetto.controller.OrderList", controller);

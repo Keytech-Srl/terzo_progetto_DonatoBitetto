@@ -1,4 +1,6 @@
 <mvc:XMLView
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
     xmlns:f="sap.f"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
@@ -19,13 +21,14 @@
                             title="{Customer/CompanyName}"
                             type="Navigation"
                             press=".onPress(${OrderID})"
+                            class="selected"
                         />
                     </items>
                 </List>
             </Page>
         </f:beginColumnPages>
         <f:midColumnPages>
-            <f:DynamicPage class="sapUiNoContentPadding">
+            <f:DynamicPage>
                 <f:title>
                     <f:DynamicPageTitle>
                         <f:heading>
@@ -43,11 +46,54 @@
                     </f:DynamicPageTitle>
                 </f:title>
                 <f:content>
-                    <IconTabBar>
+                    <IconTabBar headerBackgroundDesign="Transparent">
                         <items>
-                            <IconTabFilter text="Customer" />
+                            <IconTabFilter
+                                text="Customer"
+                                icon="sap-icon://customer"
+                            >
+                                <form:SimpleForm
+                                    layout="ResponsiveGridLayout"
+                                    columnsM="1"
+                                    columnsL="2"
+                                >
+                                    <form:toolbar>
+                                        <Toolbar>
+                                            <Button
+                                                icon="sap-icon://edit"
+                                                press=".openEditCustomerModal"
+                                            />
+                                        </Toolbar>
+                                    </form:toolbar>
+                                    <form:content>
+                                        <core:Title text="Location" />
+                                        <Label text="Company name" />
+                                        <Text text="{Customer/CompanyName}" />
+                                        <Label text="Address" />
+                                        <Text
+                                            text="{Customer/Address}, {Customer/PostalCode}"
+                                        />
+                                        <Label text="City" />
+                                        <Text text="{Customer/City}" />
+                                        <Label text="Country" />
+                                        <Text text="{Customer/Country}" />
+                                        <core:Title text="Contacts" />
+                                        <Label text="Phone" />
+                                        <Text text="{Customer/Phone}" />
+                                        <Label text="Fax" />
+                                        <Text text="{Customer/Fax}" />
+                                        <Label text="Contact" />
+                                        <Text
+                                            text="{Customer/ContactName} ({Customer/ContactTitle})"
+                                        />
+                                    </form:content>
+                                </form:SimpleForm>
+                            </IconTabFilter>
 
-                            <IconTabFilter text="Products">
+                            <IconTabFilter
+                                text="Products"
+                                icon="sap-icon://product"
+                            >
                                 <Table
                                     busyIndicatorDelay="100"
                                     alternateRowColors="true"
@@ -68,6 +114,9 @@
                                         </Column>
                                         <Column>
                                             <Text text="Tot." />
+                                            <footer>
+                                                <Text id="tot" />
+                                            </footer>
                                         </Column>
                                     </columns>
                                     <items>
@@ -77,12 +126,15 @@
                                                     text="{Product/ProductName}"
                                                 />
                                                 <Text text="{Quantity}" />
-                                                <Text text="{UnitPrice}" />
-                                                <Text text="{Discount}" />
                                                 <Text
-                                                    text="{= ${Quantity} * ${UnitPrice} * ( 1 - ${Discount})}"
+                                                    text="{parts:['UnitPrice'],formatter:'.formatter.currency'}"
                                                 />
-                                                   <!--   -->
+                                                <Text
+                                                    text="{parts:['Discount'],formatter:'.formatter.discount'}"
+                                                />
+                                                <Text
+                                                    text="{parts:['Quantity','UnitPrice','Discount'],formatter:'.formatter.invoiceTot'}"
+                                                />
                                             </cells>
                                         </ColumnListItem>
                                     </items>

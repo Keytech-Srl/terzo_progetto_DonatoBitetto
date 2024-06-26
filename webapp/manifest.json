@@ -17,6 +17,13 @@
 			"viewName": "ui5.terzo_progetto.view.App",
 			"type": "XML"
 		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
 		"routing": {
 			"config": {
 				"routerClass": "sap.m.routing.Router",

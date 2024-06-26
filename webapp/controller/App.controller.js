@@ -1,8 +1,8 @@
 sap.ui.define(["sap/ui/core/mvc/Controller"], (Controller) => {
 	const controller = {
         toggleExpanded: function () {
-            let sideNav = this.getView().byId("sideNav");
-            sideNav.setExpanded(!sideNav.getExpanded());
+            let toolPage = this.getView().byId("toolPage");
+            toolPage.setSideExpanded(!toolPage.getSideExpanded());
         },
 
         navigate: function (route) {

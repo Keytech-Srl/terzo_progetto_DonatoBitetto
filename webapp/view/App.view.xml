@@ -5,16 +5,22 @@
     controllerName="ui5.terzo_progetto.controller.App"
 >
     <tnt:ToolPage
+        id="toolPage"
         class="columns"
         sideExpanded="false"
     >
+        <tnt:header>
+            <tnt:ToolHeader>
+                <Button
+                    icon="sap-icon://menu2"
+                    press=".toggleExpanded"
+                />
+            </tnt:ToolHeader>
+        </tnt:header>
+
         <tnt:sideContent>
             <tnt:SideNavigation id="sideNav">
                 <tnt:NavigationList>
-                    <tnt:NavigationListItem
-                        icon="sap-icon://menu2"
-                        select=".toggleExpanded"
-                    />
                     <tnt:NavigationListGroup text="Main">
                         <tnt:NavigationListItem
                             id="home"

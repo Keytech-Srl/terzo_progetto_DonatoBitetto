@@ -2,5 +2,5 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
 >
-    <Text text="Home" />
+    <Text text="{Customer/CompanyName}" />
 </mvc:XMLView>
